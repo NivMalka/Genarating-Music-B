@@ -70,7 +70,22 @@ This section explains how the Python script works and how to run it.
 Open your terminal and execute the script with the following command:
 python your_script_name.py
 
+
 Replace `your_script_name.py` with the actual name of your Python file. Once executed, the script will load the models, generate the music, and create the MIDI, WAV, and MP3 files in the appropriate directories.
+
+---
+
+## 2.1. Additional Training Instructions
+
+The file `GenerateMusicFinal.ipynb` is responsible for training the model weights and extracting the necessary files:
+- `note_to_int.pkl` and `int_to_note.pkl`
+- `best_model_Gloss_0.0319.pth`
+- `training_target.pkl`
+
+You should run this notebook to generate new or improved versions of these files. (I will upload the main files that were initialized during the training process.)
+
+**Important:**  
+Due to the heavy computational processes involved, it is crucial to initialize the GPU before starting the training. Preferably, use an A100 GPU; however, a T4 is also acceptable. **Note:** When the GPU is initialized, training should commence immediately. If the GPU remains initialized without being actively used for training, computational resources are wasted at an approximate rate of 8.46 per hour. GPU usage is only relevant during the training process.
 
 ---
 
@@ -92,6 +107,7 @@ In addition to the Python script, the project includes a web interface built wit
 ### Example Integration with Flask
 
 To bridge the Python backend with your web front-end, you can set up a simple API using Flask. Below is an example:
+
 
 
 
