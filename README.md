@@ -159,3 +159,58 @@ For additional help or further clarifications, please refer to the main README.m
 
 Good luck, and enjoy creating music with your Transformer-GAN project!
 
+
+
+Below is a summary of all dependencies required to run generateMusic.py successfully:
+
+Python Version
+Python 3.10 or 3.11 (Ensure you're not using Python 3.13 as many packages like PyTorch are not yet compatible.)
+pip install "numpy<2"
+
+torch, torchvision, torchaudio
+Install using the official PyTorch CPU wheels (adjust if you require GPU support).
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+
+
+music21
+For processing and converting music data (e.g., converting token sequences to MIDI).
+pip install music21
+
+midi2audio
+For converting MIDI files to WAV using FluidSynth.
+pip install midi2audio
+
+
+pydub
+For converting WAV files to MP3.
+pip install pydub
+
+
+External Dependencies:
+FluidSynth is used by midi2audio for MIDI to WAV conversion.
+On macOS, install via Homebrew:
+brew install fluidsynth
+
+
+SoundFont:
+You must provide a valid SoundFont file (e.g., FluidR3_GM.sf2). Make sure the path to the SoundFont is correctly specified when initializing FluidSynth in your code.
+
+ffmpeg
+Required by pydub to process audio files.
+On macOS, install via Homebrew:
+brew install ffmpeg
+
+
+
+Environment Setup
+Virtual Environment:
+It is recommended to create and activate a virtual environment (e.g., using python3.11 -m venv myenv) to ensure all dependencies are isolated.
+
+Note:
+Ensure the virtual environment is activated before installing packages.
+If you encounter dependency conflicts (like with pip’s externally-managed-environment), consider using flags like --legacy-peer-deps or adjust your pip configuration.
+
+By ensuring all these dependencies are installed and correctly configured, your generateMusic.py script should run without issues.
+
+
+
