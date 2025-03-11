@@ -24,7 +24,7 @@ The **MUSIC** project is a deep learning-driven music creation system composed o
 Some of the large files used in this project (such as models and sound files) are not stored in this repository.  
 You can download them directly from the following link:  
 [Large Files on Google Drive](https://drive.google.com/drive/folders/1r2kR42Y_4moMoy6O8Va-gE2kJvPyyM-K?usp=sharing)
-
+> **Note:** The entire folder should be placed inside the `mymusic` directory for the code to work.
 
 ## Project Introduction
 
