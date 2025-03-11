@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- DaisyUI + TailwindCSS -->
+  <!-- Include DaisyUI and TailwindCSS for styling -->
   <link
     href="https://cdn.jsdelivr.net/npm/daisyui@4.12.22/dist/full.min.css"
     rel="stylesheet"
@@ -11,26 +11,30 @@
   />
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ספריית Amplitude.js -->
+  <!-- Include Amplitude.js for audio player functionality -->
   <script src="https://cdn.jsdelivr.net/npm/amplitudejs@5.3.2/dist/amplitude.js"></script>
 
   <title>Music Generation App</title>
   <style>
+    /* Main background style */
     .niv {
       background-image: url('https://reverb.laravel.com/images/hero-background.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
     }
+    /* Style for the music button container with gradient background */
     .create-music-button-container {
       background: linear-gradient(45deg, #29abe2, #8e98df, #cda9e8, #f2bbb7, #fff893);
       border-radius: 8px;
       display: inline-block;
       position: relative;
     }
+    /* Apply transition effect to all children of the music button container */
     .create-music-button-container * {
       transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     }
+    /* Style for the label on each music card */
     .music_cat {
       position: absolute;
       background: black;
@@ -42,13 +46,14 @@
       bottom: 5px;
       left: 5px;
     }
+    /* Style for the main title text with a gradient effect */
     .niv-text {
       background: -webkit-linear-gradient(#fff, #c24701);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 32px;
     }
-    /* סימון כרטיס שנבחר */
+    /* Style for the selected mood card */
     .selected-mood {
       border: 2px solid #ffd700;
     }
@@ -56,6 +61,7 @@
 </head>
 
 <body class="niv">
+  <!-- Navbar section -->
   <div class="navbar bg-transparent">
     <div class="flex-1">
       <a class="btn btn-ghost text-xl text-white">
@@ -101,28 +107,29 @@
     </div>
   </div>
 
+  <!-- Main container with sidebar and content area -->
   <div class="min-h-screen flex flex-row">
-    <!-- תפריט שמאלי -->
+    <!-- Sidebar: Search History -->
     <div class="w-1/6 bg-transparent text-white p-4 border-r-0 border-r-gray-400">
       <div class="mt-6">
         <h1 class="text-3xl font-bold mb-4 pb-2">Search History</h1>
-        <!-- כאן נוסיף שירים דינמית -->
+        <!-- Container for dynamically loading search history from localStorage -->
         <div class="space-y-4" id="search-history-container">
-          <!-- נטען פה את ההיסטוריה מה-localStorage -->
+          <!-- History items will be loaded here -->
         </div>
       </div>
     </div>
 
-    <!-- תוכן מרכזי -->
+    <!-- Main content: Music Generation and Audio Player -->
     <div class="w-3/4 flex flex-col items-center justify-center p-4">
-      <!-- כותרת -->
+      <!-- Main Title -->
       <h1 class="text-8xl font-bold mb-32 text-center niv-text">Music Generation</h1>
 
-      <!-- פריסת כרטיסים ונגן -->
+      <!-- Grid layout for mood cards and audio player -->
       <div class="grid-cols-12 gap-4 items-center flex justify-center ooo">
-        <!-- כרטיסים בצד שמאל -->
+        <!-- Left side: Mood Cards -->
         <div class="col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <!-- כרטיס Happiness -->
+          <!-- Happiness Card -->
           <div
             id="happiness-card"
             class="card glass w-40 mood-card cursor-pointer"
@@ -137,7 +144,7 @@
               😊 Happiness
             </div>
           </div>
-          <!-- כרטיס Sadness -->
+          <!-- Sadness Card -->
           <div
             id="sadness-card"
             class="card glass w-40 mood-card cursor-pointer"
@@ -152,7 +159,7 @@
               😢 Sadness
             </div>
           </div>
-          <!-- כרטיס 3: Angry -->
+          <!-- Angry Card -->
           <div class="card glass w-40">
             <figure class="rounded-xl">
               <img
@@ -164,7 +171,7 @@
               😠 Angry
             </div>
           </div>
-          <!-- כרטיס 4: Fear -->
+          <!-- Fear Card -->
           <div class="card glass w-40">
             <figure class="rounded-xl">
               <img
@@ -178,11 +185,13 @@
           </div>
         </div>
 
-        <!-- נגן Amplitude -->
+
+        <!-- Amplitude Audio Player Section -->
         <div class="col-span-4 flex justify-center px-10">
           <div
             class="relative w-player flex flex-col rounded-xl shadow-player-light bg-player-light-background border border-player-light-border dark:shadow-player-dark dark:bg-player-dark-background dark:border-player-dark-border dark:backdrop-blur-xl"
           >
+          <!-- Player Header: Album cover and song metadata -->
             <div class="px-10 pt-6 pb-4 flex items-center z-50">
               <img
                 data-amplitude-song-info="cover_art_url"
@@ -207,6 +216,7 @@
                 >
               </div>
             </div>
+             <!-- Player Controls: Progress slider and time display -->
             <div class="w-full flex flex-col px-10 pb-6 z-50">
               <input
                 type="range"
@@ -226,11 +236,11 @@
                 >
               </div>
             </div>
-
+              <!-- Player Buttons: Like, Previous, Play/Pause, Next, and Repeat -->
             <div
               class="h-control-panel px-10 py-2 rounded-b-xl border-t border-gray-200 flex items-center justify-between z-50 dark:bg-control-panel-dark-background dark:border-gray-900"
             >
-              <!-- אייקון ה"לב" לשמירה -->
+              <!-- Like Icon: Saves the current song -->
               <div class="cursor-pointer" id="like-icon">
                 <svg
                   width="26"
@@ -290,7 +300,8 @@
                 </svg>
               </div>
 
-              <!-- Play/Pause -->
+              <!-- Play/Pause Button -->
+
               <div
                 class="cursor-pointer amplitude-play-pause w-20 h-20 rounded-full bg-transparent border border-play-pause-light-border shadow-xl flex items-center justify-center dark:bg-play-pause-dark-background dark:border-play-pause-dark-border amplitude-paused"
               >
@@ -337,7 +348,7 @@
                 </svg>
               </div>
 
-              <!-- Next -->
+              <!-- Next Button -->
               <div class="cursor-pointer amplitude-next">
                 <svg
                   width="32"
@@ -363,7 +374,7 @@
                 </svg>
               </div>
 
-              <!-- Repeat -->
+              <!-- Repeat Button -->
               <div
                 class="cursor-pointer amplitude-repeat-song amplitude-repeat-off amplitude-repeat-song-off"
               >
@@ -381,7 +392,7 @@
                 </svg>
               </div>
 
-              <!-- אייקון הורדה -->
+              <!-- Download Button -->
               <div
                 class="cursor-pointer amplitude-repeat-song amplitude-repeat-off amplitude-repeat-song-off"
                 id="download-icon"
@@ -411,15 +422,16 @@
                 </svg>
               </div>
             </div>
+               <!-- Hidden decorative element with blur effect -->
             <div
               class="hidden top-14 w-full absolute ml-auto mr-auto left-0 right-0 text-center max-w-lg h-72 rounded-full bg-highlight blur-2xl dark:block"
             ></div>
           </div>
         </div>
 
-        <!-- כרטיסים בצד ימין -->
+        <!-- Right Side: Additional Mood Cards -->
         <div class="col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <!-- כרטיס 5 -->
+          <!-- Peaceful Card -->
           <div class="card glass w-40">
             <figure class="rounded-xl">
               <img
@@ -431,7 +443,7 @@
               😮 Peaceful
             </div>
           </div>
-          <!-- כרטיס 6 -->
+          <!-- Love Card -->
           <div class="card glass w-40">
             <figure class="rounded-xl">
               <img
@@ -443,7 +455,7 @@
               ❤️ Love
             </div>
           </div>
-          <!-- כרטיס 7 -->
+           <!-- Running Card -->
           <div class="card glass w-40">
             <figure class="rounded-xl">
               <img
@@ -455,8 +467,11 @@
               ❤️ Running
             </div>
           </div>
-          <!-- כרטיס 8 -->
-          <div class="card glass w-40">
+          <!-- Elegant Card -->
+          <div 
+          id="elegant-card"
+          class="card glass w-40 mood-card cursor-pointer"
+          >
             <figure class="rounded-xl">
               <img
                 src="https://cdn.soundraw.io/create_music_page/mood/elegant/elegant_1.png"
@@ -470,7 +485,7 @@
         </div>
       </div>
 
-      <!-- כפתור Generate -->
+     <!-- Generate Button Section -->
       <div class="flex justify-center mt-10">
         <div
           id="generate-btn-container"
@@ -489,16 +504,15 @@
 
   <script>
     // ----------------------------------
-    //   ניהול היסטוריה עם localStorage
+    // Local Storage Management for Song History
     // ----------------------------------
-
-    let songsHistory = []; // כאן נשמור את כל השירים בהיסטוריה
-
-    // בעת טעינת הדף - נטען מה-Storage
+    let songsHistory = []; // Array to store all songs in history
+  
+    // When the page loads, load history from localStorage
     window.addEventListener('load', () => {
       loadHistoryFromStorage();
     });
-
+  
     function loadHistoryFromStorage() {
       const stored = localStorage.getItem('myHistory');
       if (stored) {
@@ -508,15 +522,15 @@
         });
       }
     }
-
+  
     function saveHistoryToStorage() {
       localStorage.setItem('myHistory', JSON.stringify(songsHistory));
     }
-
-    // מציג שיר אחד בהיסטוריה
+  
+    // Render a single song in the history section
     function renderSongInHistory(songObj) {
       const container = document.getElementById('search-history-container');
-      // נוסיף data-id לזיהוי, וכפתור X למחיקה
+      // Add a data-id for identification and an X button for deletion
       const html = `
         <div class="flex items-center space-x-3 p-2 rounded border border-gray-600 relative cursor-pointer history-item"
              data-id="${songObj.id}">
@@ -535,8 +549,8 @@
       `;
       container.insertAdjacentHTML('beforeend', html);
     }
-
-    // מוסיף שיר חדש (גם למערך, גם ל-Storage, גם ל-UI)
+  
+    // Add a new song to history (update array, localStorage, and UI)
     function addSongToHistory(songData) {
       const songObj = {
         id: Date.now(),
@@ -544,34 +558,31 @@
         artist: songData.artist,
         album: songData.album,
         cover_art_url: songData.cover_art_url,
-        url: songData.url // חשוב לשמור כדי לנגן שוב
+        url: songData.url // Important to save for replaying the song
       };
       songsHistory.push(songObj);
       saveHistoryToStorage();
       renderSongInHistory(songObj);
     }
-
-    // האזנה לקליקים בהיסטוריה: מחיקה (X) או ניגון השיר
+  
+    // Event listener for clicks in the history section: deletion (X) or playing the song
     document.getElementById('search-history-container').addEventListener('click', (e) => {
-      // אם זה כפתור X => מחיקה
+      // If the delete button is clicked, remove the song from history
       if (e.target.classList.contains('remove-btn')) {
         e.stopPropagation();
         const parentDiv = e.target.closest('[data-id]');
         const songId = parseInt(parentDiv.getAttribute('data-id'), 10);
-        // מסירים מהמערך
         songsHistory = songsHistory.filter(song => song.id !== songId);
         saveHistoryToStorage();
-        // מסירים מה-DOM
         parentDiv.remove();
       }
-      // אחרת => ניגון
+      // Otherwise, play the selected song using Amplitude
       else {
         const parentDiv = e.target.closest('.history-item');
         if (!parentDiv) return;
         const songId = parseInt(parentDiv.getAttribute('data-id'), 10);
         const songObj = songsHistory.find(s => s.id === songId);
         if (songObj) {
-          // מנגנים את השיר באמצעות Amplitude
           Amplitude.playNow({
             name: songObj.name,
             artist: songObj.artist,
@@ -582,36 +593,37 @@
         }
       }
     });
-
+  
     // -------------------------
-    //   בחירת מצב (mood)
+    // Mood Selection
     // -------------------------
     let selectedMood = null;
-
+  
     function selectMood(mood, cardElement) {
       selectedMood = mood;
-      // מסירים סימון מכל הקלפים
+      // Remove the selection indication from all mood cards
       document.querySelectorAll('.mood-card').forEach((card) => {
         card.classList.remove('selected-mood');
       });
-      // מסמנים את הקלף הנוכחי
+      // Mark the current card as selected
       cardElement.classList.add('selected-mood');
-      // אנימציית bounce לכפתור Generate
-      document
-        .getElementById('generate-btn-container')
-        .classList.add('animate-bounce');
+      // Add bounce animation to the Generate button container
+      document.getElementById('generate-btn-container').classList.add('animate-bounce');
     }
-
-    // מאזינים לכרטיסים
+  
+    // Attach event listeners to mood cards
     document.getElementById('happiness-card').addEventListener('click', function () {
       selectMood('happiness', this);
     });
     document.getElementById('sadness-card').addEventListener('click', function () {
       selectMood('sadness', this);
     });
-
+    document.getElementById('elegant-card').addEventListener('click', function () {
+      selectMood('elegant', this);
+    });
+  
     // -------------------------
-    //   כפתור הורדה
+    // Download Button: Triggers file download when clicked
     // -------------------------
     document.getElementById('download-icon').addEventListener('click', function () {
       const filePath = this.getAttribute('data-file');
@@ -623,42 +635,72 @@
       anchor.click();
       document.body.removeChild(anchor);
     });
-
+  
     // -------------------------
-    //   כפתור Generate
+    // Generate Button: Triggers music generation process
     // -------------------------
     document.getElementById('generate-btn').onclick = async function () {
       if (!selectedMood) {
-        alert('אנא בחר מצב (Happiness או Sadness) תחילה!');
+        alert('Please select a mood (Happiness, Sadness, or Elegant) first!');
         return;
       }
-      // מסירים אנימציית bounce
-      document
-        .getElementById('generate-btn-container')
-        .classList.remove('animate-bounce');
-
-      // עוצרים שיר קודם
+      // Remove bounce animation during the process
+      document.getElementById('generate-btn-container').classList.remove('animate-bounce');
       Amplitude.stop();
-
-      // הגדרת נתונים לפי המצב
+  
+      // Define song parameters based on the selected mood
       let songUrl, coverArtUrl, songName;
-      if (selectedMood === 'happiness') {
+      if (selectedMood === 'elegant') {
+        // Display Loading indicator and call generateMusic.py
+        let loadingDiv = document.getElementById('loading-indicator');
+        if (!loadingDiv) {
+          loadingDiv = document.createElement('div');
+          loadingDiv.id = 'loading-indicator';
+          loadingDiv.style.position = 'fixed';
+          loadingDiv.style.top = '50%';
+          loadingDiv.style.left = '50%';
+          loadingDiv.style.transform = 'translate(-50%, -50%)';
+          loadingDiv.style.padding = '20px';
+          loadingDiv.style.backgroundColor = 'rgba(0,0,0,0.8)';
+          loadingDiv.style.color = 'white';
+          loadingDiv.style.fontSize = '20px';
+          loadingDiv.style.borderRadius = '10px';
+          loadingDiv.innerText = 'Loading...';
+          document.body.appendChild(loadingDiv);
+        }
+        try {
+          const response = await fetch('/generateMusic');
+          const data = await response.json();
+          if (data.success) {
+            songUrl = data.songUrl || '/mix/generated_music.mp3';
+            coverArtUrl = 'https://cdn.soundraw.io/create_music_page/mood/elegant/elegant_1.png';
+            songName = 'Elegant Song';
+            alert('The output is ready');
+          } else {
+            alert('An error occurred during music generation');
+          }
+        } catch (error) {
+          console.error(error);
+          alert('An error occurred during music generation');
+        }
+        if (loadingDiv) loadingDiv.remove();
+      } else if (selectedMood === 'happiness') {
         songUrl = '/static/audio/happiness/generated_music.mp3';
         coverArtUrl = 'https://cdn.soundraw.io/create_music_page/mood/happy/happy_1.png';
         songName = 'Happy Song';
       } else {
-        // sadness
+        // Sadness mood
         songUrl = '/static/audio/sadness/power.mp3';
         coverArtUrl = 'https://cdn.soundraw.io/create_music_page/mood/sad/sad_1.png';
         songName = 'Sad Song';
       }
-
-      // (אופציונלי) קריאה לשרת: /generate
+  
+      // (Optional) Server call: /generate
       // const response = await fetch('/generate');
       // const data = await response.json();
       // console.log(data.message);
-
-      // אתחול Amplitude עם השיר הנבחר
+  
+      // Initialize Amplitude with the chosen song
       Amplitude.init({
         songs: [
           {
@@ -670,21 +712,22 @@
           }
         ]
       });
-
-      // עדכון אייקון ההורדה
+  
+      // Update the download icon with the current song URL
       const downloadIcon = document.getElementById('download-icon');
       downloadIcon.setAttribute('data-file', songUrl);
+      // Restore bounce animation after the process completes
+      document.getElementById('generate-btn-container').classList.add('animate-bounce');
     };
-
+  
     // -------------------------
-    //   אייקון ה"לב" (שמירה)
+    // Like Icon: Save the current song to history
     // -------------------------
     document.getElementById('like-icon').addEventListener('click', () => {
-      // מקבלים את פרטי השיר הנוכחי
+      // Get current song metadata
       const currentSong = Amplitude.getActiveSongMetadata();
-      // מוסיפים להיסטוריה (עם url, כדי שנוכל לנגן שוב)
+      // Add it to the history (update array, localStorage, and UI)
       addSongToHistory(currentSong);
     });
   </script>
-</body>
-</html>
+  

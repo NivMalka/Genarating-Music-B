@@ -8,42 +8,42 @@ import torch.nn.functional as F
 import music21
 from music21 import stream, note, chord, tempo, key, meter
 
-# ייבוא המחלקות מהקובץ models.py
+# Import the models from the models.py file
 from models import SmallMusicGenerator, SmallMusicDiscriminator
 
-# הגדרת המכשיר (GPU אם קיים)
+# Set device to GPU if available, otherwise CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_models_and_mappings():
     """
-    טוען את המשקלים של המודל ואת קבצי המיפויים (note_to_int ו-int_to_note) 
-    מתוך התיקייה requiredFiles, ומחזיר את המודלים והנתונים הדרושים.
+    Loads the model weights and the mapping files (note_to_int and int_to_note)
+    from the 'requiredFiles' directory, and returns the models and the necessary data.
     """
-
-    # טען את המיפויים
+    # Load the mappings
     with open('requiredFiles/note_to_int.pkl', 'rb') as f:
         note_to_int = pickle.load(f)
     with open('requiredFiles/int_to_note.pkl', 'rb') as f:
         int_to_note = pickle.load(f)
 
     n_vocab = len(note_to_int)
-    sequence_length = 200  # ניתן לשנות לפי מה שהוגדר באימון
+    sequence_length = 200  # You can adjust this based on what was used during training
 
-    # אתחול המודלים
+    # Initialize the models
     generator = SmallMusicGenerator(n_vocab=n_vocab, sequence_length=sequence_length)
     discriminator = SmallMusicDiscriminator(n_vocab=n_vocab, sequence_length=sequence_length)
 
     generator = generator.to(device)
     discriminator = discriminator.to(device)
+    # Ensure positional encoding is on the correct device
     generator.positional_encoding = generator.positional_encoding.to(device)
 
-    # טען משקלים
-    checkpoint_path = "requiredFiles/best_model_Gloss_0.0319.pth"  # עדכן לפי שם הקובץ אם שונה
+    # Load the model weights
+    checkpoint_path = "requiredFiles/best_model_Gloss_0.0319.pth"  # Update if the filename is different
     checkpoint = torch.load(checkpoint_path, map_location=device)
     generator.load_state_dict(checkpoint['generator_state_dict'])
     discriminator.load_state_dict(checkpoint['discriminator_state_dict'])
 
-    # מצב הערכה
+    # Set models to evaluation mode
     generator.eval()
     discriminator.eval()
 
@@ -52,10 +52,10 @@ def load_models_and_mappings():
 
 def generate_sequence(generator, seed_sequence, target_length, sequence_length, n_vocab, temperature=1.0):
     """
-    מייצר רצף מוזיקלי ארוך באמצעות הגנרטור:
-    - seed_sequence: רשימת אינדקסים התחלתית
-    - target_length: אורך סופי רצוי של הרצף (מספר טוקנים)
-    - temperature: משפיע על פיזור ההסתברויות (ככל שגבוה יותר, התוצאה מגוונת יותר)
+    Generates a long musical sequence using the generator.
+    - seed_sequence: initial list of token indices
+    - target_length: desired final length of the sequence (number of tokens)
+    - temperature: controls the randomness (higher temperature yields more diverse output)
     """
     generator.eval()
     generated = seed_sequence.copy()
@@ -70,7 +70,7 @@ def generate_sequence(generator, seed_sequence, target_length, sequence_length, 
         generated.append(next_token)
     return generated
 
-# מיפוי pitch class ל-Note Names
+# Mapping from pitch class to note names
 pitch_class_map = {
     0: "C", 1: "C#", 2: "D", 3: "D#",
     4: "E", 5: "F", 6: "F#", 7: "G",
@@ -79,7 +79,7 @@ pitch_class_map = {
 
 def parse_duration(dur_str, scale=1.0):
     """
-    ממיר משך ביחידות 16th ל-quarterLength של music21
+    Converts a duration in 16th note units to music21's quarterLength.
     """
     try:
         dur = float(dur_str)
@@ -89,7 +89,7 @@ def parse_duration(dur_str, scale=1.0):
 
 def token_to_music21(token):
     """
-    ממיר טוקן (NOTE_/CHORD_/REST_) לאובייקט מתאים של music21.
+    Converts a token (NOTE_/CHORD_/REST_) to the corresponding music21 object.
     """
     if token.startswith("NOTE_"):
         parts = token.split("_")
@@ -138,7 +138,8 @@ def token_to_music21(token):
 
 def build_music21_stream(token_sequence):
     """
-    ממיר רשימת טוקנים לזרם music21, כאשר 3 הטוקנים הראשונים משמשים כטמפו, מפתח וחתימת זמן.
+    Converts a list of tokens into a music21 stream.
+    The first 3 tokens are assumed to be tempo, key, and time signature.
     """
     s = stream.Stream()
 
@@ -147,13 +148,13 @@ def build_music21_stream(token_sequence):
         key_token = token_sequence[1]
         time_token = token_sequence[2]
 
-        # טמפו
+        # Tempo
         m = re.match(r"TEMPO_(\d+(\.\d+)?)", tempo_token)
         if m:
             t = tempo.MetronomeMark(number=float(m.group(1)))
             s.insert(0, t)
 
-        # מפתח
+        # Key
         m = re.match(r"KEY_(.+)", key_token)
         if m:
             k_str = m.group(1).replace("_", " ").strip()
@@ -161,7 +162,7 @@ def build_music21_stream(token_sequence):
                 k_obj = key.Key(k_str)
                 s.insert(0, k_obj)
             except:
-                # ניסיון תיקון במקרה של " sharp"
+                # Attempt to fix the key string if " sharp" is present
                 k_str_fixed = k_str.replace(" sharp", "#")
                 try:
                     k_obj = key.Key(k_str_fixed)
@@ -169,7 +170,7 @@ def build_music21_stream(token_sequence):
                 except Exception as e2:
                     print("Error processing key:", k_str, e2)
 
-        # חתימת זמן
+        # Time Signature
         m = re.match(r"TIME_(.+)", time_token)
         if m:
             ts_str = m.group(1).replace("_", "/")
@@ -191,19 +192,19 @@ def build_music21_stream(token_sequence):
     return s
 
 def main():
-    # טוען את המודלים והמיפויים
+    # Load models and mappings
     generator, discriminator, note_to_int, int_to_note, n_vocab, sequence_length = load_models_and_mappings()
 
-    # טוען מערך האימון (לבחירת seed) מתוך התיקייה requiredFiles
+    # Load training inputs from requiredFiles
     with open('requiredFiles/training_target.pkl', 'rb') as f:
         train_inputs = pickle.load(f)
     print("Training inputs shape:", train_inputs.shape)
 
-    # בוחר seed אקראי
+    # Randomly select a seed sequence from the training inputs
     sample_idx = np.random.randint(0, train_inputs.shape[0])
     seed_sequence = train_inputs[sample_idx].tolist()
 
-    # יוצר רצף ארוך יותר
+    # Generate a new music sequence
     target_length = 500
     generated_sequence = generate_sequence(generator, seed_sequence, target_length, sequence_length, n_vocab, temperature=1.0)
     generated_tokens = [int_to_note[token] for token in generated_sequence]
@@ -211,33 +212,47 @@ def main():
     print("Generated sequence length:", len(generated_tokens))
     print("First 50 tokens:", generated_tokens[:50])
 
-    # בניית זרם מוזיקלי וייצוא ל-MIDI
+    # Build a music21 stream from the generated tokens
     music_stream = build_music21_stream(generated_tokens)
-
-    # נתיב הקובץ יישמר בתיקייה static/audio/mix
-    output_midi_path = 'static/audio/mix/generated_music.mid'
-    music_stream.write('midi', fp=output_midi_path)
-    print("✅ MIDI file generated successfully:", output_midi_path)
-
-    # המרה מ-MIDI ל-WAV בעזרת midi2audio (FluidSynth)
+    
+    # Ensure the output directory exists
+    output_dir = 'static/audio/mix'
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    # Function to get the next available file number based on existing files in the directory
+    def get_next_file_number(directory, base_name, extension):
+        existing = [f for f in os.listdir(directory) if f.startswith(base_name) and f.endswith(extension)]
+        max_num = 0
+        for f in existing:
+            num_str = f[len(base_name):-len(extension)]
+            if num_str.isdigit():
+                num = int(num_str)
+                if num > max_num:
+                    max_num = num
+        return max_num + 1
+    
+    file_num = get_next_file_number(output_dir, "generated_music", ".mid")
+    midi_file = os.path.join(output_dir, f"generated_music{file_num}.mid")
+    wav_file = os.path.join(output_dir, f"generated_music{file_num}.wav")
+    mp3_file = os.path.join(output_dir, f"generated_music{file_num}.mp3")
+    
+    # Save the music stream as a MIDI file
+    music_stream.write('midi', fp=midi_file)
+    print("✅ MIDI file generated successfully:", midi_file)
+    
+    # Convert the MIDI file to WAV using midi2audio (FluidSynth)
     from midi2audio import FluidSynth
-
-    midi_file = output_midi_path  # 'static/audio/mix/generated_music.mid'
-    wav_file = 'static/audio/mix/generated_music.wav'
     sound_font_path = 'requiredFiles/FluidR3_GM.sf2'
-
     fs = FluidSynth(sound_font=sound_font_path)
     fs.midi_to_audio(midi_file, wav_file)
     print("✅ WAV file generated successfully:", wav_file)
-
-    # המרה מ-WAV ל-MP3 בעזרת pydub
+    
+    # Convert the WAV file to MP3 using pydub
     from pydub import AudioSegment
-
     sound = AudioSegment.from_wav(wav_file)
-    mp3_file = 'static/audio/mix/generated_music.mp3'
     sound.export(mp3_file, format="mp3")
     print("✅ MP3 file generated successfully:", mp3_file)
-
 
 if __name__ == "__main__":
     main()
