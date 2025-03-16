@@ -67,8 +67,6 @@ This notebook is used for training the music generation model on Google Colab. K
 To avoid wasting computational resources, **run the training code on the CPU** up to the training stage and save these files.  
 Then, **switch to the GPU** to load the saved files and start training immediately.  
 Only the **training phase** (which uses deep learning libraries optimized for parallel processing) can fully exploit GPU capabilities.
-
-
 Please note that in the training code (GenerateMusicFinal.ipynb), some sections are commented out. The first sections refer to the larger model we created, which requires more powerful hardware and additional time to train. As such, they are documented for those who have the necessary resources. Additionally, there are parts of the notebook dedicated to uploading a weights file and continuing from that point for further training or evaluation, and these are also documented accordingly.
 ---
 
