@@ -197,9 +197,13 @@ Ensure you're not using Python 3.13, as many packages (like PyTorch) are not yet
 
 ## Virtual Environment Setup
 Create and activate a virtual environment to isolate dependencies:
-python3.11 -m venv myenv source myenv/bin/activate
+python3.11 -m venv myenv
+source myenv/bin/activate
 
 ---
+
+## To run the server (server.py), ensure that Flask is installed. You can install it by running:
+pip install flask
 
 ## Python Package Dependencies
 Install the following packages:
