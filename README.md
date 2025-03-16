@@ -202,7 +202,8 @@ source myenv/bin/activate
 
 ---
 
-## To run the server (server.py), ensure that Flask is installed. You can install it by running:
+## To run the server (server.py), ensure that Flask is installed.
+You can install it by running:
 pip install flask
 
 ## Python Package Dependencies
