@@ -30,6 +30,10 @@ You can download them directly from the following link:
 
 Below is a high-level overview of our project's architecture and workflow, depicted in two diagrams. The first diagram illustrates the main components—ranging from model training in Google Colab, through the Flask server, to the frontend interface and the storage/processing layer. The second diagram provides a step-by-step view of the entire process: from data collection and model training, to user interactions with the web interface, and finally to how the Flask API and backend processing generate and deliver the final music output.
 
+![package diagram](./images/package diagram.jpeg)
+
+![activity diagram](./images/activity.jpeg)
+
 
 
 
