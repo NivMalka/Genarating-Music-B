@@ -3,6 +3,13 @@
 The **MUSIC** project is a deep learning-driven music creation system composed of two main parts. This guide details the overall architecture, file responsibilities, and required dependencies to help you set up, train, and deploy the project.
 
 ---
+## Large Files
+
+Some of the large files used in this project (such as models and sound files) are not stored in this repository.  
+You can download them directly from the following link:  
+[Large Files on Google Drive](https://drive.google.com/drive/folders/1r2kR42Y_4moMoy6O8Va-gE2kJvPyyM-K?usp=sharing)
+> **Note:** The entire folder should be placed inside the `mymusic` directory for the code to work. The song database is also located here and is named finalzip.zip. Additionally, the website's video file can be found here as well(clip.mov.zip).
+
 
 ## Table of Contents
 
@@ -19,12 +26,7 @@ The **MUSIC** project is a deep learning-driven music creation system composed o
 
 ---
 
-## Large Files
 
-Some of the large files used in this project (such as models and sound files) are not stored in this repository.  
-You can download them directly from the following link:  
-[Large Files on Google Drive](https://drive.google.com/drive/folders/1r2kR42Y_4moMoy6O8Va-gE2kJvPyyM-K?usp=sharing)
-> **Note:** The entire folder should be placed inside the `mymusic` directory for the code to work. The song database is also located here and is named finalzip.zip. Additionally, the website's video file can be found here as well(clip.mov.zip).
 ## Project Introduction
 
 Below is a high-level overview of our project's architecture and workflow, depicted in two diagrams. The first diagram illustrates the main components—ranging from model training in Google Colab, through the Flask server, to the frontend interface and the storage/processing layer. The second diagram provides a step-by-step view of the entire process: from data collection and model training, to user interactions with the web interface, and finally to how the Flask API and backend processing generate and deliver the final music output.
