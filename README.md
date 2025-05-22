@@ -204,6 +204,11 @@ The `ui.html` file provides an interactive user interface for music generation u
 **Summary:**  
 The web interface allows users to select a mood, generate music accordingly, play it via Amplitude.js, view their search history, and download their favorite tracks. It combines responsive design with dynamic audio playback for an engaging experience.
 
+
+![Web Interface](./images/nivv.jpeg)
+
+
+
 ---
 
 
